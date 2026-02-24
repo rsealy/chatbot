@@ -1,0 +1,123 @@
+.yt-download {
+  padding: 24px;
+  color: #e5e7eb;
+}
+
+.yt-download-title {
+  font-size: 1.4rem;
+  margin: 0 0 0.25rem;
+}
+
+.yt-download-subtitle {
+  margin: 0 0 1.5rem;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.yt-download-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 520px;
+}
+
+.yt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+
+.yt-field-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  max-width: 220px;
+}
+
+.yt-field input,
+.yt-field-inline input {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  padding: 8px 12px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #e5e7eb;
+  outline: none;
+}
+
+.yt-field input:focus,
+.yt-field-inline input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
+}
+
+.yt-download-btn {
+  margin-top: 4px;
+  align-self: flex-start;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #0f172a;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.yt-download-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.yt-progress {
+  margin-top: 16px;
+  max-width: 420px;
+}
+
+.yt-progress-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(30, 64, 175, 0.35);
+  overflow: hidden;
+}
+
+.yt-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #22c55e);
+  transition: width 0.2s ease-out;
+}
+
+.yt-progress-label {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.yt-error {
+  margin-top: 12px;
+  color: #fecaca;
+  font-size: 0.85rem;
+}
+
+.yt-result {
+  margin-top: 16px;
+  font-size: 0.9rem;
+}
+
+.yt-save-json-btn {
+  margin-top: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: transparent;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.yt-note {
+  margin-top: 18px;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+

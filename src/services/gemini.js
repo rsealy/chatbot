@@ -1,9 +1,10 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { CSV_TOOL_DECLARATIONS } from './csvTools';
+import { YOUTUBE_TOOL_DECLARATIONS } from './youtubeTools';
 
 const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_API_KEY || '');
 
-const MODEL = 'gemini-2.0-flash';
+const MODEL = 'gemini-2.5-flash';
 
 const SEARCH_TOOL = { googleSearch: {} };
 const CODE_EXEC_TOOL = { codeExecution: {} };
@@ -179,6 +180,65 @@ export const chatWithCsvTools = async (history, newMessage, csvHeaders, executeF
     toolCalls.push({ name, args, result: toolResult });
 
     // Capture chart payloads so the UI can render them
+    if (toolResult?._chartType) {
+      charts.push(toolResult);
+    }
+
+    response = (
+      await chat.sendMessage([
+        { functionResponse: { name, response: { result: toolResult } } },
+      ])
+    ).response;
+  }
+
+  return { text: response.text(), charts, toolCalls };
+};
+
+// ── Function-calling chat for YouTube JSON tools ─────────────────────────────
+// Similar to chatWithCsvTools but operates on a loaded channel JSON dataset
+// and exposes generateImage, plot_metric_vs_time, play_video, compute_stats_json.
+
+export const chatWithYoutubeTools = async (history, newMessage, executeFn) => {
+  const systemInstruction = await loadSystemPrompt();
+  const model = genAI.getGenerativeModel({
+    model: MODEL,
+    tools: [{ functionDeclarations: YOUTUBE_TOOL_DECLARATIONS }],
+  });
+
+  const baseHistory = history.map((m) => ({
+    role: m.role === 'user' ? 'user' : 'model',
+    parts: [{ text: m.content || '' }],
+  }));
+
+  const chatHistory = systemInstruction
+    ? [
+        {
+          role: 'user',
+          parts: [{ text: `Follow these instructions in every response:\n\n${systemInstruction}` }],
+        },
+        { role: 'model', parts: [{ text: "Got it! I'll follow those instructions." }] },
+        ...baseHistory,
+      ]
+    : baseHistory;
+
+  const chat = model.startChat({ history: chatHistory });
+
+  let response = (await chat.sendMessage(newMessage)).response;
+  const charts = [];
+  const toolCalls = [];
+
+  for (let round = 0; round < 5; round++) {
+    const parts = response.candidates?.[0]?.content?.parts || [];
+    const funcCall = parts.find((p) => p.functionCall);
+    if (!funcCall) break;
+
+    const { name, args } = funcCall.functionCall;
+    console.log('[YouTube Tool]', name, args);
+    const toolResult = await executeFn(name, args);
+    console.log('[YouTube Tool result]', toolResult);
+
+    toolCalls.push({ name, args, result: toolResult });
+
     if (toolResult?._chartType) {
       charts.push(toolResult);
     }
